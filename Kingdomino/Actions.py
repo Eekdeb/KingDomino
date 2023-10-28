@@ -123,7 +123,43 @@ class Actions:
         playerQueue = [i for i in playerQueue if i!=0]
         return playerQueue
         
+    def chooseBrick(self,player,selected,pile,brick4):
+        player.setBrick(brick4[selected])
+        return
+
+    """
+    This is moving a select to the next empty spot in the list chowned by 0
+    Inputs
+    selected: the value that is selected in a list
+    moveUpp: if the selected is moving upp or down
+    list: the list that is treversed. 0 is unocupied
+    """
+    def jumpSelect(self,selected,moveUpp,list):
+        max = len(list)-1 
+        empty = False
+        #TODO check if the list has no empty spots
+        if(moveUpp):
+            while(not empty):
+                if(selected != 0):
+                    selected = selected - 1
+                else:
+                    selected = max
+                if(list[selected] == 0):
+                    empty = True
+        if(not moveUpp):
+            while(not empty):
+                if(selected != max):
+                    selected = selected + 1
+                else:
+                    selected = 0
+                if(list[selected] == 0):
+                    empty = True
+        return selected
+        
+    
+    #Chose brick for all player in terminal
     def nextRound(self,pile,brick4,players):
+        #newqueue after wat they choose
         playerQueue = [0,0,0,0]
         for p in players:
             print(p.name)

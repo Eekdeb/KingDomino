@@ -75,7 +75,20 @@ class BrickStack:
         pygame.draw.rect(surface,(0,0,0),rect1,1)
         pygame.draw.rect(surface,allColors[brick['bioms'][1]],rect2)
         pygame.draw.rect(surface,(0,0,0),rect2,1)
-        return 
+        return
+
+    def drawColor(self,brick,surface,rect):
+        posX = rect[0]
+        posY = rect[1]
+        width = rect[2]
+        hight = rect[3]
+        rect1 = (rect[0],rect[1],rect[2],rect[3])
+        rect2 = (rect[0]+rect[2],rect[1],rect[2],rect[3])
+        pygame.draw.rect(surface,allColors[brick['bioms'][0]],rect1)
+        pygame.draw.rect(surface,(255,255,255),rect1,1)
+        pygame.draw.rect(surface,allColors[brick['bioms'][1]],rect2)
+        pygame.draw.rect(surface,(255,255,255),rect2,1)
+        return  
     
     def draw4(self,brick4,surface,pos,brickSize):
         posX = pos[0]
@@ -83,4 +96,17 @@ class BrickStack:
         for brick in brick4:
             self.draw(brick,surface,(posX,posY,brickSize,brickSize))
             posY = posY + brickSize + brickSize/10
+        return
+    
+    def draw4Choose(self,brick4,selected,surface,pos,brickSize):
+        i = 0
+        posX = pos[0]
+        posY = pos[1]
+        for brick in brick4:
+            if(i == selected):
+                self.drawColor(brick,surface,(posX,posY,brickSize,brickSize))
+            else:
+                self.draw(brick,surface,(posX,posY,brickSize,brickSize))
+            posY = posY + brickSize + brickSize/10
+            i = i+1
         return
