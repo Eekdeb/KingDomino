@@ -10,7 +10,7 @@ waterColor = (45, 116, 179)
 fieldColor = (36, 201, 80)
 desertColor = (144, 150, 123)
 mineColor = (64, 69, 49)
-#change
+#change 2
 allColors =  [background_colour,startBrickColor,wheatColor,forestColor,waterColor,fieldColor,desertColor,mineColor]
 
 class Board:
