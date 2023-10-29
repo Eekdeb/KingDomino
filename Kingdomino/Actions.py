@@ -6,6 +6,8 @@ Created on Tue Sep 26 16:57:53 2023
 """
 from Player import Player
 
+initChooseBrick = False
+
 class Actions:
     
     #checks if there is a collitoin when rotating.
@@ -108,21 +110,6 @@ class Actions:
             name = input("Player" + str(i) + " name:")
             players.append(Player(name,colors[i]))
         return players
-    
-    def firstRound(self,pile,brick4,players):
-        pile.print4(brick4)
-        playerQueue = [0,0,0,0]
-        for p in players:
-            while True:
-                value = input(p.getName() + " chose brick:")
-                index = int(value) - 1
-                if(playerQueue[index] == 0):
-                    break
-                print("Already chosen by " + playerQueue[index].getName())
-            p.setPlacingBrick(brick4[index])
-            playerQueue[index] = p
-        playerQueue = [i for i in playerQueue if i!=0]
-        return playerQueue
         
     def chooseBrick(self,player,selected,pile,brick4):
         player.setBrick(brick4[selected])
@@ -179,7 +166,26 @@ class Actions:
                     break
                 print("Already chosen by " + playerQueue[index].getName())
             #p.chosenBrick = brick4[index]
-            p.setBrick(brick4[index])
+            if(not initChooseBrick):
+                p.setPlacingBrick(brick4[index])
+                initChooseBrick = True
+            else:
+                p.setBrick(brick4[index])
+            playerQueue[index] = p
+        playerQueue = [i for i in playerQueue if i!=0]
+        return playerQueue
+    
+    def firstRound(self,pile,brick4,players):
+        pile.print4(brick4)
+        playerQueue = [0,0,0,0]
+        for p in players:
+            while True:
+                value = input(p.getName() + " chose brick:")
+                index = int(value) - 1
+                if(playerQueue[index] == 0):
+                    break
+                print("Already chosen by " + playerQueue[index].getName())
+            p.setPlacingBrick(brick4[index])
             playerQueue[index] = p
         playerQueue = [i for i in playerQueue if i!=0]
         return playerQueue

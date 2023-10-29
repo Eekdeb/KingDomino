@@ -22,6 +22,42 @@ def drawBoard(board,surface,colors,rect):
 			pygame.draw.rect(surface,(0,0,0),partRect,1)
 	return
 
+initchoosingBrickFace = False
+def choosingBrickFace(playerQueue,brick4,surface):
+	global initchoosingBrickFace
+	newQueue = [0,0,0,0]
+	for player in playerQueue:
+		placed = False
+		selected = len(newQueue)-1
+		selected = ac.jumpSelect(selected,False,newQueue)
+		pile.draw4Choose(player,newQueue,brick4,selected,surface,(0,0),bricksize)
+		pygame.display.flip()
+		while(not placed):
+			for event in pygame.event.get(): 
+				if event.type == pygame.QUIT: 
+					running = False
+				if event.type == pygame.KEYDOWN:
+					if event.key == pygame.K_w:
+						selected = ac.jumpSelect(selected,True,newQueue)
+						pile.draw4Choose(player,newQueue,brick4,selected,surface,(0,0),bricksize)
+					if event.key == pygame.K_s:
+						selected = ac.jumpSelect(selected,False,newQueue)
+						pile.draw4Choose(player,newQueue,brick4,selected,surface,(0,0),bricksize)
+					if event.key == pygame.K_b:
+						if(newQueue[selected] == 0):
+							newQueue[selected] = player
+							if(not initchoosingBrickFace):
+								player.setPlacingBrick(brick4[selected])
+							player.setBrick(brick4[selected])
+							placed = True
+			pygame.display.flip()
+
+	#Take away the 0s and uppdate the queue
+	newQueue = [i for i in newQueue if i!=0]
+	if(not initchoosingBrickFace):
+		initchoosingBrickFace = True
+	return newQueue			
+
 tmpBoard = [[(3,0),(4,0),(5,0),(6,0),(7,0)],
             [(3,0),(4,0),(5,0),(6,0),(7,0)],
             [(3,0),(4,0),(2,0),(6,0),(7,0)],
@@ -67,9 +103,9 @@ pygame.display.list_modes()
 # Fill the background colour to the screen 
 screen.fill(background_colour) 
 
-drawBoard(tmpBoard,screen,allColors,(size[0]/6,size[1]/6,400,400))
+#drawBoard(tmpBoard,screen,allColors,(size[0]/6,size[1]/6,400,400))
 # Update the display using flip 
-pygame.display.flip()
+#pygame.display.flip()
 
 
 #Initialis
@@ -85,7 +121,7 @@ brick4 = pile.get4()
 ##First round of chosing
 pile.draw4(brick4,screen,(0,0),bricksize)
 pygame.display.flip()
-playerQueue = ac.firstRound(pile,brick4,playerQueue)
+playerQueue = choosingBrickFace(playerQueue,brick4,screen)
 
 running = True
 while running: 
@@ -95,41 +131,13 @@ while running:
 		if(i != 11):
 			brick4 = pile.get4()
 			#Next round chosing bircks
-			#pile.draw(brick4[0],screen,(0,0,bricksize,bricksize))
 			pile.draw4(brick4,screen,(0,0),bricksize)
 			#later to draw the names above the players text = font.render(str("Hello"), True, (0, 0, 0))
 			#screen.blit(text, (200,100))
 			pygame.display.flip()
 			#chose bricks
-			newQueue = [0,0,0,0]
-			for player in playerQueue:
-				placed = False
-				selected = len(newQueue)-1
-				selected = ac.jumpSelect(selected,False,newQueue)
-				pile.draw4Choose(player,newQueue,brick4,selected,screen,(0,0),bricksize)
-				pygame.display.flip()
-				while(not placed):
-					for event in pygame.event.get(): 
-						if event.type == pygame.QUIT: 
-							running = False
-						if event.type == pygame.KEYDOWN:
-							if event.key == pygame.K_w:
-								selected = ac.jumpSelect(selected,True,newQueue)
-								pile.draw4Choose(player,newQueue,brick4,selected,screen,(0,0),bricksize)
-							if event.key == pygame.K_s:
-								selected = ac.jumpSelect(selected,False,newQueue)
-								pile.draw4Choose(player,newQueue,brick4,selected,screen,(0,0),bricksize)
-							if event.key == pygame.K_b:
-								if(newQueue[selected] == 0):
-									newQueue[selected] = player
-									player.setBrick(brick4[selected])
-									placed = True
-					pygame.display.flip()
-
-			#Take away the 0s and uppdate the queue
-			playerQueue = [i for i in newQueue if i!=0]			
-			#playerQueue = ac.nextRound(pile,brick4,playerQueue)
-		
+			playerQueue = choosingBrickFace(playerQueue,brick4,screen)
+					
 		#Place the bricks
 		for player in playerQueue:
 			player.board.drawBoardPlacing(screen,(size[0]/6,size[1]/6,bricksize*5,bricksize*5),(0,0),(0,1),player.placingBrick)
