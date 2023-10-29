@@ -64,20 +64,24 @@ class BrickStack:
             string += "]\n"
         print(string)
 
-    def draw(self,brick,surface,rect):
+    def draw(self,brick,player,surface,rect):
         posX = rect[0]
         posY = rect[1]
         width = rect[2]
         hight = rect[3]
+        if player == 0:
+            color = (0,0,0)
+        else:
+            color = player.color
         rect1 = (rect[0],rect[1],rect[2],rect[3])
         rect2 = (rect[0]+rect[2],rect[1],rect[2],rect[3])
         pygame.draw.rect(surface,allColors[brick['bioms'][0]],rect1)
-        pygame.draw.rect(surface,(0,0,0),rect1,1)
+        pygame.draw.rect(surface,color,rect1,3)
         pygame.draw.rect(surface,allColors[brick['bioms'][1]],rect2)
-        pygame.draw.rect(surface,(0,0,0),rect2,1)
+        pygame.draw.rect(surface,color,rect2,3)
         return
 
-    def drawColor(self,brick,surface,rect):
+    def drawColor(self,player,brick,surface,rect):
         posX = rect[0]
         posY = rect[1]
         width = rect[2]
@@ -85,28 +89,38 @@ class BrickStack:
         rect1 = (rect[0],rect[1],rect[2],rect[3])
         rect2 = (rect[0]+rect[2],rect[1],rect[2],rect[3])
         pygame.draw.rect(surface,allColors[brick['bioms'][0]],rect1)
-        pygame.draw.rect(surface,(255,255,255),rect1,1)
+        pygame.draw.rect(surface,player.color,rect1,4)
         pygame.draw.rect(surface,allColors[brick['bioms'][1]],rect2)
-        pygame.draw.rect(surface,(255,255,255),rect2,1)
+        pygame.draw.rect(surface,player.color,rect2,4)
         return  
     
     def draw4(self,brick4,surface,pos,brickSize):
         posX = pos[0]
         posY = pos[1]
         for brick in brick4:
-            self.draw(brick,surface,(posX,posY,brickSize,brickSize))
+            self.draw(brick,0,surface,(posX,posY,brickSize,brickSize))
             posY = posY + brickSize + brickSize/10
         return
     
-    def draw4Choose(self,brick4,selected,surface,pos,brickSize):
+    """
+    Inputs
+    player: current player chosing
+    chosen: Lists wich bricks are chosen for who
+    brick4: the 4 bricks that you choos from
+    selected the index of the brick selected
+    surface: the window to draw on
+    pos: where in the window to draw
+    brickSize: the size the brick is gona be drawn in
+    """
+    def draw4Choose(self,player,chosen,brick4,selected,surface,pos,brickSize):
         i = 0
         posX = pos[0]
         posY = pos[1]
         for brick in brick4:
             if(i == selected):
-                self.drawColor(brick,surface,(posX,posY,brickSize,brickSize))
+                self.drawColor(player,brick,surface,(posX,posY,brickSize,brickSize))
             else:
-                self.draw(brick,surface,(posX,posY,brickSize,brickSize))
+                self.draw(brick,chosen[i],surface,(posX,posY,brickSize,brickSize))
             posY = posY + brickSize + brickSize/10
             i = i+1
         return

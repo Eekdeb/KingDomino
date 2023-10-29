@@ -106,7 +106,7 @@ while running:
 				placed = False
 				selected = len(newQueue)-1
 				selected = ac.jumpSelect(selected,False,newQueue)
-				pile.draw4Choose(brick4,selected,screen,(0,0),bricksize)
+				pile.draw4Choose(player,newQueue,brick4,selected,screen,(0,0),bricksize)
 				pygame.display.flip()
 				while(not placed):
 					for event in pygame.event.get(): 
@@ -115,10 +115,10 @@ while running:
 						if event.type == pygame.KEYDOWN:
 							if event.key == pygame.K_w:
 								selected = ac.jumpSelect(selected,True,newQueue)
-								pile.draw4Choose(brick4,selected,screen,(0,0),bricksize)
+								pile.draw4Choose(player,newQueue,brick4,selected,screen,(0,0),bricksize)
 							if event.key == pygame.K_s:
 								selected = ac.jumpSelect(selected,False,newQueue)
-								pile.draw4Choose(brick4,selected,screen,(0,0),bricksize)
+								pile.draw4Choose(player,newQueue,brick4,selected,screen,(0,0),bricksize)
 							if event.key == pygame.K_b:
 								if(newQueue[selected] == 0):
 									newQueue[selected] = player

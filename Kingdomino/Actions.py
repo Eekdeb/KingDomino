@@ -95,6 +95,7 @@ class Actions:
         return placed
         
     def createPlayers(self):
+        colors = [(106,17,173),(217,33,33),(4,99,7),(255,225,64)]
         players = []
         nrOfPlayers = 0
         while True:
@@ -105,7 +106,7 @@ class Actions:
         
         for i in range(0, nrOfPlayers):
             name = input("Player" + str(i) + " name:")
-            players.append(Player(name))
+            players.append(Player(name,colors[i]))
         return players
     
     def firstRound(self,pile,brick4,players):
