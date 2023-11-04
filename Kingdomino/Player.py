@@ -8,7 +8,7 @@ from Board import Board
 
 class Player:
     
-    def __init__(self, name, color):
+    def __init__(self, name, color, boardpos):
         self.board = Board()
         self.placingBrick = 0
         self.chosenBrick = 0
@@ -16,6 +16,7 @@ class Player:
         self.pos = [0,0]
         self.rot = 0
         self.color = color
+        self.boardpos = boardpos
         
     def __str__(self):
         return str(self.name)

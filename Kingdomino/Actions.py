@@ -96,8 +96,13 @@ class Actions:
             player.placingBrick = player.chosenBrick
         return placed
         
-    def createPlayers(self):
+    def createPlayers(self,screensize,bricksize):
         colors = [(106,17,173),(217,33,33),(4,99,7),(255,225,64)]
+        boardpos1 = (screensize[0]/12,screensize[1]/12,bricksize*5,bricksize*5)
+        boardpos2 = ((screensize[0]/12),6*(screensize[1]/12),bricksize*5,bricksize*5)
+        boardpos3 = (8*(screensize[0]/12),(screensize[1]/12),bricksize*5,bricksize*5)
+        boardpos4 = (8*(screensize[0]/12),6*(screensize[1]/12),bricksize*5,bricksize*5)
+        boardpositions = [boardpos1,boardpos2,boardpos3,boardpos4]
         players = []
         nrOfPlayers = 0
         while True:
@@ -108,7 +113,7 @@ class Actions:
         
         for i in range(0, nrOfPlayers):
             name = input("Player" + str(i) + " name:")
-            players.append(Player(name,colors[i]))
+            players.append(Player(name,colors[i],boardpositions[i]))
         return players
         
     def chooseBrick(self,player,selected,pile,brick4):

@@ -5,7 +5,6 @@ import json
 import time
 from BrickStack import BrickStack
 
-
 def drawBoard(board,surface,colors,rect):
 	posX = rect[0]
 	posY = rect[1]
@@ -88,9 +87,11 @@ pygame.init()
 # Set the screen to fullscreen
 size = pygame.display.get_desktop_sizes()
 size = (size[0][0]-10, size[0][1]-50)
-bricksize = 80
-spacerSize = 10
 screen = pygame.display.set_mode(size)
+
+#globals
+bricksize = 60
+spacerSize = 10
 
 #Varables for text writing
 font = pygame.font.SysFont('arial', 50)
@@ -113,7 +114,7 @@ ac = Actions()
 pile = BrickStack()
 pile.shuffle()
 #create players
-playerQueue = ac.createPlayers()
+playerQueue = ac.createPlayers(size,bricksize)
 
 #Start the game
 ##Payers Pick the first card
@@ -140,10 +141,10 @@ while running:
 					
 		#Place the bricks
 		for player in playerQueue:
-			player.board.drawBoardPlacing(screen,(size[0]/6,size[1]/6,bricksize*5,bricksize*5),(0,0),(0,1),player.placingBrick)
+			#player.board.drawBoardPlacing(screen,(size[0]/6,size[1]/6,bricksize*5,bricksize*5),(0,0),(0,1),player.placingBrick)
 			if not ac.initAndCheckBrickOK(player):
 				player.nextBrick()
-				break
+				continue
 			placed = False
 			while(not placed):
 				tempBoard = []
@@ -152,22 +153,22 @@ while running:
 						running = False
 					if event.type == pygame.KEYDOWN:
 						if event.key == pygame.K_a:
-							ac.placeBrick(player,"a",screen,(size[0]/6,size[1]/6,bricksize*5,bricksize*5))
+							ac.placeBrick(player,"a",screen,player.boardpos)
 							print("A")
 						if event.key == pygame.K_s:
-							ac.placeBrick(player,"s",screen,(size[0]/6,size[1]/6,bricksize*5,bricksize*5))
+							ac.placeBrick(player,"s",screen,player.boardpos)
 							print("S")
 						if event.key == pygame.K_w:
-							ac.placeBrick(player,"w",screen,(size[0]/6,size[1]/6,bricksize*5,bricksize*5))
+							ac.placeBrick(player,"w",screen,player.boardpos)
 							print("W")
 						if event.key == pygame.K_d:
-							ac.placeBrick(player,"d",screen,(size[0]/6,size[1]/6,bricksize*5,bricksize*5))
+							ac.placeBrick(player,"d",screen,player.boardpos)
 							print("d")
 						if event.key == pygame.K_q:
-							ac.placeBrick(player,"q",screen,(size[0]/6,size[1]/6,bricksize*5,bricksize*5))
+							ac.placeBrick(player,"q",screen,player.boardpos)
 							print("q")
 						if event.key == pygame.K_b:
-							ask = ac.placeBrick(player,"b",screen,(size[0]/6,size[1]/6,bricksize*5,bricksize*5))
+							ask = ac.placeBrick(player,"b",screen,player.boardpos)
 							print(ask)
 							if ask:
 								placed = True
