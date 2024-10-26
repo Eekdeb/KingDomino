@@ -5,6 +5,8 @@ Created on Tue Sep 26 16:57:53 2023
 @author: A483349
 """
 from Player import Player
+from textEditor import getName
+from NameSelector import player_name_entry
 
 initChooseBrick = False
 
@@ -96,7 +98,7 @@ class Actions:
             player.placingBrick = player.chosenBrick
         return placed
         
-    def createPlayers(self,screensize,bricksize):
+    def createPlayersTerminal(self,screensize,bricksize):
         colors = [(106,17,173),(217,33,33),(4,99,7),(255,225,64)]
         boardpos1 = (screensize[0]/12,screensize[1]/12,bricksize*5,bricksize*5)
         boardpos2 = ((screensize[0]/12),6*(screensize[1]/12),bricksize*5,bricksize*5)
@@ -114,6 +116,18 @@ class Actions:
         for i in range(0, nrOfPlayers):
             name = input("Player" + str(i) + " name:")
             players.append(Player(name,colors[i],boardpositions[i]))
+        return players
+    
+    def createPlayers(self,screen,screensize,bricksize,nrOfPlayers):
+        boardpos1 = (screensize[0]/12,screensize[1]/12,bricksize*5,bricksize*5)
+        boardpos2 = ((screensize[0]/12),6*(screensize[1]/12),bricksize*5,bricksize*5)
+        boardpos3 = (8*(screensize[0]/12),(screensize[1]/12),bricksize*5,bricksize*5)
+        boardpos4 = (8*(screensize[0]/12),6*(screensize[1]/12),bricksize*5,bricksize*5)
+        boardpositions = [boardpos1,boardpos2,boardpos3,boardpos4]
+        player_names,colors = player_name_entry(screen)
+        players = []
+        for i in range(0, nrOfPlayers):
+            players.append(Player(player_names[i],colors[i],boardpositions[i]))
         return players
         
     def chooseBrick(self,player,selected,pile,brick4):

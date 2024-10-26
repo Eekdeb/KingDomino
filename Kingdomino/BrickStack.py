@@ -124,3 +124,11 @@ class BrickStack:
             posY = posY + brickSize + brickSize/10
             i = i+1
         return
+    
+    def drawPlayerBricks(self,playerQueue,surface,pos,brickSize):
+        posX = pos[0]
+        posY = pos[1]
+        for player in playerQueue:
+            self.drawColor(player,player.chosenBrick,surface,(posX,posY,brickSize,brickSize))
+            posY = posY + brickSize + brickSize/10
+        return
