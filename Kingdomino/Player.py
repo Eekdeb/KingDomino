@@ -21,7 +21,6 @@ class Player:
     def __str__(self):
         return str(self.name)
     
-    #TODO gör så att man kan se kronor också när man printar denna
     def strBrick(self):
         return str(self.placingBrick['bioms'])
     

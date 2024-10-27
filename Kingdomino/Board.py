@@ -185,20 +185,26 @@ class Board:
         self.board = np.roll(self.board, -1,axis=1)
         return True
     
-    def printChosePut(self,brick,pos1,pos2):
-        showBoard = Board()
+    def printChosePut(self, brick, pos1, pos2):
+        # Create a deep copy of the current board state
         showBoard = copy.deepcopy(self)
-        showBoard.board[pos1[0]][pos1[1]] = (brick["bioms"][0],brick["crowns"][0])
-        showBoard.board[pos2[0]][pos2[1]] = (brick["bioms"][1],brick["crowns"][1])
+
+        # Update the copied board with the new brick placements
+        showBoard.board[pos1[0]][pos1[1]] = (brick["bioms"][0], brick["crowns"][0])
+        showBoard.board[pos2[0]][pos2[1]] = (brick["bioms"][1], brick["crowns"][1])
+
+        # Display the updated board state
         showBoard.printBoard()
+        
         return showBoard
         
-    def drawBoard(self,surface,rect):
+    def drawBoard(self,surface,rect,playerColor):
         posX = rect[0]
         posY = rect[1]
         width = rect[2]/5
         hight = rect[3]/5
         pygame.draw.rect(surface,allColors[1],rect)
+        pygame.draw.rect(surface,playerColor,(posX-5,posY-5,width*5+10,hight*5+10))
         for row in range(0,5):
             changY = posY + row * hight
             for column in range(0,5):
@@ -209,20 +215,37 @@ class Board:
                 pygame.draw.rect(surface,(0,0,0),partRect,1)
         return
     
-    def drawBoardPlacing(self,surface,rect,pos1,pos2,brick):
-        posX = rect[0]
-        posY = rect[1]
-        width = rect[2]/5
-        hight = rect[3]/5
-        showBoard = self.printChosePut(brick,pos1,pos2)
-        pygame.draw.rect(surface,allColors[1],rect)
-        for row in range(0,5):
-            changY = posY + row * hight
-            for column in range(0,5):
-                changX = posX + column * width
-                partRect = (changX,changY,width,hight)
-                color = allColors[showBoard.board[row][column][0]]
-                pygame.draw.rect(surface,color,partRect)
-                pygame.draw.rect(surface,(0,0,0),partRect,1)
-        return
+    def drawBoardPlacing(self, surface, rect, pos1, pos2, brick):
+        # Unpack rect values for clarity
+        posX, posY, fullWidth, fullHeight = rect
+        cellWidth = fullWidth / 5
+        cellHeight = fullHeight / 5
+
+        # Determine the board layout to display
+        showBoard = self.printChosePut(brick, pos1, pos2)
+
+        # Draw the main background rectangle
+        pygame.draw.rect(surface, allColors[1], rect)
+
+        # Draw each cell in the 5x5 grid
+        for row in range(5):
+            for column in range(5):
+                cellX = posX + column * cellWidth
+                cellY = posY + row * cellHeight
+                cellRect = pygame.Rect(cellX, cellY, cellWidth, cellHeight)
+
+                cellBiome, cellCrowns = showBoard.board[row][column]
+                cellColor = allColors[cellBiome]
+                
+                # Draw the cell and its border
+                pygame.draw.rect(surface, cellColor, cellRect)          # Cell color
+                pygame.draw.rect(surface, (0, 0, 0), cellRect, 1)       # Cell border
+
+                crownRect = pygame.Rect(cellX+cellWidth/10, cellY+cellHeight/10, cellWidth/8, cellHeight/8)
+                offsett = cellWidth/7
+                for crown in range(cellCrowns):
+                    pygame.draw.rect(surface, (0, 0, 0), crownRect)
+                    crownRect.left += offsett
+
+
     

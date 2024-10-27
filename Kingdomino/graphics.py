@@ -113,7 +113,7 @@ pygame.display.flip()
 
 #------------------------------------------------------------------------------------
 #  								Start Game
-#---------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------
 
 #Initialis
 ac = Actions()
@@ -123,6 +123,9 @@ pile.shuffle()
 #create players
 playerQueue = ac.createPlayers(screen,size,bricksize,4)
 screen.fill(background_colour)
+for player in playerQueue:
+	player.board.drawBoard(screen,player.boardpos,player.color)
+	pygame.display.flip()
 #Start the game
 ##Payers Pick the first card
 brick4 = pile.get4()
@@ -141,7 +144,7 @@ while running:
 		if(i != 11):
 			brick4 = pile.get4()
 			#Next round chosing bircks
-			pile.draw4(brick4,screen,chooseBrickPos,bricksize)
+			pile.take4(brick4,screen,chooseBrickPos,bricksize)
 			#later to draw the names above the players text = font.render(str("Hello"), True, (0, 0, 0))
 			pygame.display.flip()
 			#chose bricks

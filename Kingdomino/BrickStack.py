@@ -29,6 +29,17 @@ class BrickStack:
         string += self.crownToStars(self.bricks['crowns'][1])
         return string
     
+    def print4(self,brick4):
+        string = ""
+        for i in range(0, 4):
+            string += str(i+1) + ": ["
+            string +=  str(brick4[i]['bioms'][0])
+            string += self.crownToStars(brick4[i]['crowns'][0])
+            string += str(brick4[i]['bioms'][1])
+            string += self.crownToStars(brick4[i]['crowns'][1])
+            string += "]\n"
+        print(string)
+    
     def crownToStars(self,crown):
         if(crown == 0):
             return "   "
@@ -45,6 +56,7 @@ class BrickStack:
     def shuffle(self):
         random.shuffle(self.bricks)
         
+    #takes the top 4 bricks in the stack and returns them
     def get4(self):
         bricks4 = []
         for i in range(0, 4):
@@ -52,49 +64,38 @@ class BrickStack:
         bricks4 = sorted(bricks4,key = itemgetter('value'))
         return bricks4
     
-    #fixa print crowns
-    def print4(self,brick4):
-        string = ""
-        for i in range(0, 4):
-            string += str(i+1) + ": ["
-            string +=  str(brick4[i]['bioms'][0])
-            string += self.crownToStars(brick4[i]['crowns'][0])
-            string += str(brick4[i]['bioms'][1])
-            string += self.crownToStars(brick4[i]['crowns'][1])
-            string += "]\n"
-        print(string)
 
-    def draw(self,brick,player,surface,rect):
-        posX = rect[0]
-        posY = rect[1]
-        width = rect[2]
-        hight = rect[3]
-        if player == 0:
-            color = (0,0,0)
-        else:
-            color = player.color
-        rect1 = (rect[0],rect[1],rect[2],rect[3])
-        rect2 = (rect[0]+rect[2],rect[1],rect[2],rect[3])
-        pygame.draw.rect(surface,allColors[brick['bioms'][0]],rect1)
-        pygame.draw.rect(surface,color,rect1,3)
-        pygame.draw.rect(surface,allColors[brick['bioms'][1]],rect2)
-        pygame.draw.rect(surface,color,rect2,3)
-        return
+    #draw a brick on the board
+    def draw(self, brick, player, surface, rect):
+        posX, posY, width, height = rect
+        
+        # Determine color based on player state
+        color = (0, 0, 0) if player == 0 else player.color
 
-    def drawColor(self,player,brick,surface,rect):
-        posX = rect[0]
-        posY = rect[1]
-        width = rect[2]
-        hight = rect[3]
-        rect1 = (rect[0],rect[1],rect[2],rect[3])
-        rect2 = (rect[0]+rect[2],rect[1],rect[2],rect[3])
-        pygame.draw.rect(surface,allColors[brick['bioms'][0]],rect1)
-        pygame.draw.rect(surface,player.color,rect1,4)
-        pygame.draw.rect(surface,allColors[brick['bioms'][1]],rect2)
-        pygame.draw.rect(surface,player.color,rect2,4)
-        return  
-    
-    def draw4(self,brick4,surface,pos,brickSize):
+        # Define the main rectangles for the brick biomes
+        rect_biome1 = pygame.Rect(posX, posY, width, height)
+        rect_biome2 = pygame.Rect(posX + width, posY, width, height)
+        # Define the main rectangles for the crowns
+        rect_crown1 = pygame.Rect(posX+width/10, posY+height/10, width/8, height/8)
+        rect_crown2 = pygame.Rect(posX + width+width/10, posY+height/10, width/8, height/8)
+        offsett = width/7
+
+        # Draw the biomes with borders
+        pygame.draw.rect(surface, allColors[brick['bioms'][0]], rect_biome1)   # First biome
+        pygame.draw.rect(surface, color, rect_biome1, 3)                       # Border for first biome
+        for crown in range(brick['crowns'][0]):
+            pygame.draw.rect(surface, (0,0,0), rect_crown1)
+            rect_crown1.left += offsett
+
+        pygame.draw.rect(surface, allColors[brick['bioms'][1]], rect_biome2)   # Second biome
+        pygame.draw.rect(surface, color, rect_biome2, 3)       
+                        # Border for second biome 
+        for crown in range(brick['crowns'][1]):
+            pygame.draw.rect(surface, (0,0,0), rect_crown2)
+            rect_crown2.left += offsett
+
+    #takes 4 bricks on the borad
+    def take4(self,brick4,surface,pos,brickSize):
         posX = pos[0]
         posY = pos[1]
         for brick in brick4:
@@ -118,7 +119,7 @@ class BrickStack:
         posY = pos[1]
         for brick in brick4:
             if(i == selected):
-                self.drawColor(player,brick,surface,(posX,posY,brickSize,brickSize))
+                self.draw(brick,player,surface,(posX,posY,brickSize,brickSize))
             else:
                 self.draw(brick,chosen[i],surface,(posX,posY,brickSize,brickSize))
             posY = posY + brickSize + brickSize/10
@@ -129,6 +130,6 @@ class BrickStack:
         posX = pos[0]
         posY = pos[1]
         for player in playerQueue:
-            self.drawColor(player,player.chosenBrick,surface,(posX,posY,brickSize,brickSize))
+            self.draw(player.chosenBrick,player,surface,(posX,posY,brickSize,brickSize))
             posY = posY + brickSize + brickSize/10
         return

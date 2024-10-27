@@ -118,7 +118,7 @@ class Actions:
             players.append(Player(name,colors[i],boardpositions[i]))
         return players
     
-    def createPlayers(self,screen,screensize,bricksize,nrOfPlayers):
+    def createPlayers(self,screen,screensize,bricksize,nrOfPlayers) -> list[Player]:
         boardpos1 = (screensize[0]/12,screensize[1]/12,bricksize*5,bricksize*5)
         boardpos2 = ((screensize[0]/12),6*(screensize[1]/12),bricksize*5,bricksize*5)
         boardpos3 = (8*(screensize[0]/12),(screensize[1]/12),bricksize*5,bricksize*5)
