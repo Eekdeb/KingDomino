@@ -9,7 +9,7 @@ from Board import Board
 class Player:
     
     def __init__(self, name, color, boardpos):
-        self.board = Board()
+        self.board:Board = Board()
         self.placingBrick = 0
         self.chosenBrick = 0
         self.name = name

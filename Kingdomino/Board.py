@@ -1,17 +1,8 @@
 import numpy as np
 import copy
 import pygame
-
-background_colour = (117, 115, 89) 
-startBrickColor = (255,255,255)
-wheatColor = (212, 204, 59)
-forestColor = (25, 115, 49)
-waterColor = (45, 116, 179)
-fieldColor = (36, 201, 80)
-desertColor = (144, 150, 123)
-mineColor = (64, 69, 49)
-#change 2
-allColors =  [background_colour,startBrickColor,wheatColor,forestColor,waterColor,fieldColor,desertColor,mineColor]
+import config
+import Player
 
 class Board:
     def __init__(self):
@@ -197,55 +188,50 @@ class Board:
         showBoard.printBoard()
         
         return showBoard
-        
-    def drawBoard(self,surface,rect,playerColor):
-        posX = rect[0]
-        posY = rect[1]
-        width = rect[2]/5
-        hight = rect[3]/5
-        pygame.draw.rect(surface,allColors[1],rect)
-        pygame.draw.rect(surface,playerColor,(posX-5,posY-5,width*5+10,hight*5+10))
-        for row in range(0,5):
-            changY = posY + row * hight
-            for column in range(0,5):
-                changX = posX + column * width
-                partRect = (changX,changY,width,hight)
-                color = allColors[self.board[row][column][0]]
-                pygame.draw.rect(surface,color,partRect)
-                pygame.draw.rect(surface,(0,0,0),partRect,1)
-        return
     
-    def drawBoardPlacing(self, surface, rect, pos1, pos2, brick):
+    def drawPlayerBoard(self, surface: pygame.Surface, player, pos1 = None, pos2 = None):
         # Unpack rect values for clarity
-        posX, posY, fullWidth, fullHeight = rect
-        cellWidth = fullWidth / 5
-        cellHeight = fullHeight / 5
+        posX, posY, rectWidth, rectHeight = player.boardpos
+        cellWidth = rectWidth / 5
+        cellHeight = rectHeight / 5
+
+        placing_an_extra_brick = (pos1 is not None and pos2 is not None)
 
         # Determine the board layout to display
-        showBoard = self.printChosePut(brick, pos1, pos2)
+        if placing_an_extra_brick:
+            showBoard = self.printChosePut(player.placingBrick, pos1, pos2)
 
         # Draw the main background rectangle
-        pygame.draw.rect(surface, allColors[1], rect)
+        pygame.draw.rect(surface, player.color, (posX - 5, posY - 5, rectWidth + 10, rectHeight + 10))
 
         # Draw each cell in the 5x5 grid
         for row in range(5):
             for column in range(5):
                 cellX = posX + column * cellWidth
                 cellY = posY + row * cellHeight
-                cellRect = pygame.Rect(cellX, cellY, cellWidth, cellHeight)
+                cellRect = (cellX, cellY, cellWidth, cellHeight)
 
-                cellBiome, cellCrowns = showBoard.board[row][column]
-                cellColor = allColors[cellBiome]
+                if placing_an_extra_brick:
+                    cellBiome, cellCrowns = showBoard.board[row][column]
+                    cellColor = config.allColors[cellBiome]
+                else:
+                    cellColor = config.allColors[self.board[row][column][0]]
                 
                 # Draw the cell and its border
                 pygame.draw.rect(surface, cellColor, cellRect)          # Cell color
                 pygame.draw.rect(surface, (0, 0, 0), cellRect, 1)       # Cell border
 
-                crownRect = pygame.Rect(cellX+cellWidth/10, cellY+cellHeight/10, cellWidth/8, cellHeight/8)
-                offsett = cellWidth/7
-                for crown in range(cellCrowns):
-                    pygame.draw.rect(surface, (0, 0, 0), crownRect)
-                    crownRect.left += offsett
+                if placing_an_extra_brick:
+                    self._draw_crowns(surface,cellRect,cellCrowns)
+                    
+    def _draw_crowns(self, surface: pygame.Surface, cellRect, cellCrowns):
+        cellX, cellY, cellWidth, cellHeight = cellRect
+        crownRect = pygame.Rect(cellX + cellWidth / 10, cellY + cellHeight / 10, cellWidth / 8, cellHeight / 8)
+        offset = cellWidth / 7
+        for _ in range(cellCrowns):
+            pygame.draw.rect(surface, (0, 0, 0), crownRect)
+            crownRect.left += offset
+        return
 
 
     

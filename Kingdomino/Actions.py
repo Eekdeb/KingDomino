@@ -7,6 +7,7 @@ Created on Tue Sep 26 16:57:53 2023
 from Player import Player
 from textEditor import getName
 from NameSelector import player_name_entry
+import pygame
 
 initChooseBrick = False
 
@@ -57,7 +58,7 @@ class Actions:
         player.rot = 0
         return True
     
-    def choseBrickPos(self,player,keyPress,surface,rect):
+    def choseBrickPos(self,player:Player,keyPress,surface,rect):
         pos1,pos2 = self.getPositions(player.pos, player.rot)
         #player.board.printChosePut(player.placingBrick,pos1,pos2, player.rot)
         #move brick down or scrole
@@ -88,7 +89,7 @@ class Actions:
                 return True
         pos1,pos2 = self.getPositions(player.pos,player.rot)
         #player.board.printChosePut(player.placingBrick, pos1, pos2, player.rot)
-        player.board.drawBoardPlacing(surface,rect,pos1,pos2,player.placingBrick)
+        player.board.drawPlayerBoard(surface,player,pos1,pos2)
 
         return False
     
@@ -118,12 +119,17 @@ class Actions:
             players.append(Player(name,colors[i],boardpositions[i]))
         return players
     
-    def createPlayers(self,screen,screensize,bricksize,nrOfPlayers) -> list[Player]:
-        boardpos1 = (screensize[0]/12,screensize[1]/12,bricksize*5,bricksize*5)
-        boardpos2 = ((screensize[0]/12),6*(screensize[1]/12),bricksize*5,bricksize*5)
-        boardpos3 = (8*(screensize[0]/12),(screensize[1]/12),bricksize*5,bricksize*5)
-        boardpos4 = (8*(screensize[0]/12),6*(screensize[1]/12),bricksize*5,bricksize*5)
-        boardpositions = [boardpos1,boardpos2,boardpos3,boardpos4]
+    def createPlayers(self, screen: pygame.Surface, brickSize:int, nrOfPlayers: int) -> list[Player]:
+        # Get screen dimensions directly from the screen surface
+        screen_width, screen_height = screen.get_width(), screen.get_height()
+
+        # Define board positions based on the screen dimensions and brick size
+        boardpos1 = (screen_width / 12, screen_height / 12, brickSize * 5, brickSize * 5)
+        boardpos2 = (screen_width / 12, 6 * (screen_height / 12), brickSize * 5, brickSize * 5)
+        boardpos3 = (8 * (screen_width / 12), screen_height / 12, brickSize * 5, brickSize * 5)
+        boardpos4 = (8 * (screen_width / 12), 6 * (screen_height / 12), brickSize * 5, brickSize * 5)
+        boardpositions = [boardpos1, boardpos2, boardpos3, boardpos4]
+
         player_names,colors = player_name_entry(screen)
         players = []
         for i in range(0, nrOfPlayers):

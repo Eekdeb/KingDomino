@@ -1,26 +1,24 @@
 
 import json
+from pathlib import Path
 import random
 import pygame
 from operator import itemgetter
-
-background_colour = (117, 115, 89) 
-startBrickColor = (255,255,255)
-wheatColor = (212, 204, 59)
-forestColor = (25, 115, 49)
-waterColor = (45, 116, 179)
-fieldColor = (36, 201, 80)
-desertColor = (144, 150, 123)
-mineColor = (64, 69, 49)
-
-allColors =  [background_colour,startBrickColor,wheatColor,forestColor,waterColor,fieldColor,desertColor,mineColor]
+import config
 
 class BrickStack:
     
     def __init__(self):
-        f = open("C:\\Users\\Eek\\OneDrive\\Dokument\\Codes\\Python\\Kingdomino\\Bricks.json")
-        data = json.load(f)
-        self.bricks = data["bricks"]
+        base_path = Path(__file__).parent
+        json_file_path = base_path / "Bricks.json"
+        try:
+            with open(json_file_path) as f:
+                data = json.load(f)
+                self.bricks = data["bricks"]
+        except FileNotFoundError:
+            raise RuntimeError("Bricks.json file not found.")
+        except json.JSONDecodeError:
+            raise RuntimeError("Error decoding JSON from Bricks.json.")
     
     def __str__(self):
         string =  str(self.bricks['bioms'][0]) + " "
@@ -51,6 +49,8 @@ class BrickStack:
             return "***"
     
     def pull(self):
+        if not self.bricks:
+            raise RuntimeError("No more bricks in the stack.")
         return self.bricks.pop(0)
     
     def shuffle(self):
@@ -81,13 +81,13 @@ class BrickStack:
         offsett = width/7
 
         # Draw the biomes with borders
-        pygame.draw.rect(surface, allColors[brick['bioms'][0]], rect_biome1)   # First biome
+        pygame.draw.rect(surface, config.allColors[brick['bioms'][0]], rect_biome1)   # First biome
         pygame.draw.rect(surface, color, rect_biome1, 3)                       # Border for first biome
         for crown in range(brick['crowns'][0]):
             pygame.draw.rect(surface, (0,0,0), rect_crown1)
             rect_crown1.left += offsett
 
-        pygame.draw.rect(surface, allColors[brick['bioms'][1]], rect_biome2)   # Second biome
+        pygame.draw.rect(surface, config.allColors[brick['bioms'][1]], rect_biome2)   # Second biome
         pygame.draw.rect(surface, color, rect_biome2, 3)       
                         # Border for second biome 
         for crown in range(brick['crowns'][1]):
@@ -96,8 +96,7 @@ class BrickStack:
 
     #takes 4 bricks on the borad
     def take4(self,brick4,surface,pos,brickSize):
-        posX = pos[0]
-        posY = pos[1]
+        posX,posY = pos
         for brick in brick4:
             self.draw(brick,0,surface,(posX,posY,brickSize,brickSize))
             posY = posY + brickSize + brickSize/10
