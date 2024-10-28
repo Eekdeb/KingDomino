@@ -27,7 +27,7 @@ pile = BrickStack()
 pile.shuffle()
 
 # Create players
-playerQueue = ac.createPlayers(screen, config.BRICK_SIZE, 4)
+playerQueue = ac.createPlayers(screen, config.BRICK_SIZE, 1)
 screen.fill(config.background_colour)
 
 for player in playerQueue:
@@ -36,7 +36,7 @@ for player in playerQueue:
 
 # Start the game loop
 brick4 = pile.get4()
-playerQueue = graphics.choosingBrickFace(playerQueue, brick4, brickSelectionPosition, screen, ac, pile, config.BRICK_SIZE)
+playerQueue = graphics.choosingBricks(playerQueue, brick4, brickSelectionPosition, screen, ac, pile, config.BRICK_SIZE)
 running = True
 
 while running:
@@ -46,13 +46,13 @@ while running:
             brick4 = pile.get4()
             pile.take4(brick4, screen, brickSelectionPosition, config.BRICK_SIZE)
             pygame.display.flip()
-            playerQueue = graphics.choosingBrickFace(playerQueue, brick4, brickSelectionPosition, screen, ac, pile, config.BRICK_SIZE)
+            playerQueue = graphics.choosingBricks(playerQueue, brick4, brickSelectionPosition, screen, ac, pile, config.BRICK_SIZE)
 
         for player in playerQueue:
-            if not ac.initAndCheckBrickOK(player):
+            if not ac.init_and_check_brick_OK(player):
                 player.nextBrick()
                 continue
-            ac.placeBrick(player, "§", screen, player.boardpos)
+            ac.place_brick(player, "§", screen, player.boardpos)
             placed = False
             while not placed:
                 for event in pygame.event.get():
@@ -65,7 +65,7 @@ while running:
                             pygame.K_q: "q", pygame.K_b: "b"
                         }
                         if event.key in action_map:
-                            ask = ac.placeBrick(player, action_map[event.key], screen, player.boardpos)
+                            ask = ac.place_brick(player, action_map[event.key], screen, player.boardpos)
                             if event.key == pygame.K_b and ask:
                                 placed = True
                 pygame.display.flip()

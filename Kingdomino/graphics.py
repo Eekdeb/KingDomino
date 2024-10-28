@@ -20,7 +20,7 @@ def drawCrowns(surface, posX, posY, cellWidth, cellHeight, crownCount, crownColo
         pygame.draw.rect(surface, crownColor, crownRect)
         crownRect.left += offset
 
-def choosingBrickFace(playerQueue, brick4, pos, surface, ac, pile, bricksize):
+def choosingBricks(playerQueue, brick4, pos, surface, ac, pile, bricksize):
     newQueue = [0, 0, 0, 0]
     for player in playerQueue:
         placed = False

@@ -20,34 +20,6 @@ class Board:
                 string += str(column) + " "
         string += "\n"
         return string
-        
-    def printBoard(self):
-        for row in self.board:
-            print("\n")
-            for column in row:
-                if(column[1] == 0):
-                    print(column[0],"   ", end="", sep="") 
-                if(column[1] == 1):
-                    print(column[0],"*  ", end="", sep="")
-                if(column[1] == 2):
-                    print(column[0],"** ", end="", sep="")
-                if(column[1] == 3):
-                    print(column[0],"***", end="", sep="")
-        print("\n")
-        
-    def printBoardBrick(self,pos1,pos2):
-        for row in range(0, len(self.board[0])):
-            print("\n")
-            for column in range(0, len(self.board[0])):
-                if(self.board[row][column][1] == 0):
-                    print(self.board[row][column][0],"  ", end="  ", sep="") 
-                if(self.board[row][column][1] == 1):
-                    print(self.board[row][column][0],"* ", end="  ", sep="")
-                if(self.board[row][column][1] == 2):
-                    print(self.board[row][column][0],"**", end="  ", sep="") 
-                if(self.board[row][column][1] == 3):
-                    print(self.board[row][column][0],"***", end="", sep="") 
-        print("\n")
     
     #returns true when succesfully placed
     def put(self,brick,pos1,pos2):
@@ -183,9 +155,6 @@ class Board:
         # Update the copied board with the new brick placements
         showBoard.board[pos1[0]][pos1[1]] = (brick["bioms"][0], brick["crowns"][0])
         showBoard.board[pos2[0]][pos2[1]] = (brick["bioms"][1], brick["crowns"][1])
-
-        # Display the updated board state
-        showBoard.printBoard()
         
         return showBoard
     
