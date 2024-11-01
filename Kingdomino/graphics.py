@@ -25,7 +25,7 @@ def choosingBricks(playerQueue, brick4, pos, surface, ac, pile, bricksize):
     for player in playerQueue:
         placed = False
         selected = len(newQueue) - 1
-        selected = ac.jumpSelect(selected, False, newQueue)
+        selected = ac.jump_Select(selected, False, newQueue)
         pile.draw4Choose(player, newQueue, brick4, selected, surface, pos, bricksize)
         pygame.display.flip()
         while not placed:
@@ -36,10 +36,10 @@ def choosingBricks(playerQueue, brick4, pos, surface, ac, pile, bricksize):
                     return []
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_w:
-                        selected = ac.jumpSelect(selected, True, newQueue)
+                        selected = ac.jump_Select(selected, True, newQueue)
                         pile.draw4Choose(player, newQueue, brick4, selected, surface, pos, bricksize)
                     elif event.key == pygame.K_s:
-                        selected = ac.jumpSelect(selected, False, newQueue)
+                        selected = ac.jump_Select(selected, False, newQueue)
                         pile.draw4Choose(player, newQueue, brick4, selected, surface, pos, bricksize)
                     elif event.key == pygame.K_b and newQueue[selected] == 0:
                         newQueue[selected] = player

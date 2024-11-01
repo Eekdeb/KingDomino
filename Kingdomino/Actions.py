@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Sep 26 16:57:53 2023
-
-@author: A483349
-"""
 from Player import Player
 from textEditor import getName
 from NameSelector import player_name_entry
@@ -11,8 +5,8 @@ import pygame
 
 class Actions:
     
-    #checks if there is a collitoin when rotating.
-    #This accurs when the brick rotates outside the playing field
+    #checks if there is a collision when rotating.
+    #This accurse when the brick rotates outside the playing field
     def check_collision_rotation(self,pos,rot):
         if((rot == 0 and pos[0] == 4)or rot == 2 and pos[0] == 0):
             return True
@@ -84,68 +78,54 @@ class Actions:
             player.placingBrick = player.chosenBrick
         return placed
     
-    def createPlayers(self, screen: pygame.Surface, brickSize:int, nrOfPlayers: int) -> list[Player]:
+    def create_Players(self, screen: pygame.Surface, brick_size: int, nr_of_players: int) -> list[Player]:
         # Get screen dimensions directly from the screen surface
         screen_width, screen_height = screen.get_width(), screen.get_height()
 
-        # Define board positions based on the screen dimensions and brick size
-        boardpos1 = (screen_width / 12, screen_height / 12, brickSize * 5, brickSize * 5)
-        boardpos2 = (screen_width / 12, 6 * (screen_height / 12), brickSize * 5, brickSize * 5)
-        boardpos3 = (8 * (screen_width / 12), screen_height / 12, brickSize * 5, brickSize * 5)
-        boardpos4 = (8 * (screen_width / 12), 6 * (screen_height / 12), brickSize * 5, brickSize * 5)
-        boardpositions = [boardpos1, boardpos2, boardpos3, boardpos4]
+        board_positions = [
+            (screen_width / 12, screen_height / 12, brick_size * 5, brick_size * 5),
+            (screen_width / 12, 6 * (screen_height / 12), brick_size * 5, brick_size * 5),
+            (8 * (screen_width / 12), screen_height / 12, brick_size * 5, brick_size * 5),
+            (8 * (screen_width / 12), 6 * (screen_height / 12), brick_size * 5, brick_size * 5)
+        ]
 
-        player_names,colors = player_name_entry(screen)
-        players = []
-        for i in range(0, nrOfPlayers):
-            players.append(Player(player_names[i],colors[i],boardpositions[i]))
+        if nr_of_players > len(board_positions):
+            raise ValueError(f"Maximum supported players is {len(board_positions)}. You provided {nrOfPlayers}.")
+
+        player_names, colors = player_name_entry(screen)
+        if nr_of_players > len(player_names) or nr_of_players > len(colors):
+            raise ValueError("Not enough names or colors provided for the number of players.")
+
+        # Create players and assign names, colors, and board positions
+        players = [
+            Player(player_names[i], colors[i], board_positions[i]) 
+            for i in range(nr_of_players)
+        ]
+        
         return players
-        
-    def chooseBrick(self,player,selected,pile,brick4):
-        player.setBrick(brick4[selected])
-        return
 
-    """
-    This is moving a select to the next empty spot in the list chowned by 0
-    Inputs
-    selected: the value that is selected in a list
-    moveUpp: if the selected is moving upp or down
-    list: the list that is treversed. 0 is unocupied
-    """
-    def jumpSelect(self,selected,moveUpp,list):
-        max = len(list)-1 
-        empty = False
-        #TODO check if the list has no empty spots
-        if(moveUpp):
-            while(not empty):
-                if(selected != 0):
-                    selected = selected - 1
-                else:
-                    selected = max
-                if(list[selected] == 0):
-                    empty = True
-        if(not moveUpp):
-            while(not empty):
-                if(selected != max):
-                    selected = selected + 1
-                else:
-                    selected = 0
-                if(list[selected] == 0):
-                    empty = True
-        return selected
+    def jump_Select(self, selected: int, move_Up: bool, items: list[int]) -> int:
+        """
+        Move selection to the next empty spot (value 0) in the list.
+        Parameters:
+        selected (int): The current index of the selected item.
+        move_Up (bool): Whether to move up (True) or down (False) in the list.
+        items (list[int]): The list being traversed, where 0 indicates an unoccupied spot.
+
+        Returns:
+        int: The index of the next empty spot.
+        """
+        max_index = len(items) - 1
         
-    def firstRound(self,pile,brick4,players):
-        pile.print4(brick4)
-        playerQueue = [0,0,0,0]
-        for p in players:
-            while True:
-                value = input(p.getName() + " chose brick:")
-                index = int(value) - 1
-                if(playerQueue[index] == 0):
-                    break
-                print("Already chosen by " + playerQueue[index].getName())
-            p.setPlacingBrick(brick4[index])
-            playerQueue[index] = p
-        playerQueue = [i for i in playerQueue if i!=0]
-        return playerQueue
+        if 0 not in items:
+            return selected
+        
+        while True:
+            if move_Up:
+                selected = selected - 1 if selected > 0 else max_index
+            else:
+                selected = selected + 1 if selected < max_index else 0
+            if items[selected] == 0:
+                break
+        return selected
         

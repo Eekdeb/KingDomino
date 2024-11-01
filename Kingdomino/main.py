@@ -27,7 +27,7 @@ pile = BrickStack()
 pile.shuffle()
 
 # Create players
-playerQueue = ac.createPlayers(screen, config.BRICK_SIZE, 1)
+playerQueue = ac.create_Players(screen, config.BRICK_SIZE, 2)
 screen.fill(config.background_colour)
 
 for player in playerQueue:
