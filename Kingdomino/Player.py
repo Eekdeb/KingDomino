@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Oct  7 21:06:32 2023
-
-@author: a483349
-"""
 from Board import Board
 
 class Player:

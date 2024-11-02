@@ -33,8 +33,8 @@ class Actions:
             return rot
         return (rot + 1) % 4
         
-    def init_and_check_brick_OK(self,player):
-        if not player.board.checkPlacementRollOK(player.placingBrick):
+    def init_and_check_brick_OK(self,player:Player):
+        if not player.board.check_placement_roll_OK(player.placingBrick):
             print("No placec to put \n", player.placingBrick)
             return False
         player.pos = [0,0]
@@ -45,10 +45,10 @@ class Actions:
         pos1, pos2 = self.get_positions(player.pos, player.rot)
         # Define movement behavior for each key press
         move_actions = {
-            'w': lambda: (player.pos[0] > 0 and not (player.rot == 3 and player.pos[0] == 1), -1, 0, player.board.moveDown),
-            's': lambda: (player.pos[0] < 4 and not (player.rot == 1 and player.pos[0] == 3), 1, 0, player.board.moveUpp),
-            'd': lambda: (player.pos[1] < 4 and not (player.rot == 0 and player.pos[1] == 3), 0, 1, player.board.moveLeft),
-            'a': lambda: (player.pos[1] > 0 and not (player.rot == 2 and player.pos[1] == 1), 0, -1, player.board.moveRight)
+            'w': lambda: (player.pos[0] > 0 and not (player.rot == 3 and player.pos[0] == 1), -1, 0, player.board.move_down),
+            's': lambda: (player.pos[0] < 4 and not (player.rot == 1 and player.pos[0] == 3), 1, 0, player.board.move_up),
+            'd': lambda: (player.pos[1] < 4 and not (player.rot == 0 and player.pos[1] == 3), 0, 1, player.board.move_left),
+            'a': lambda: (player.pos[1] > 0 and not (player.rot == 2 and player.pos[1] == 1), 0, -1, player.board.move_right)
         }
         # Handle key movements for 'w', 's', 'd', and 'a'
         if keyPress in move_actions:
@@ -65,10 +65,11 @@ class Actions:
         if keyPress == 'b':
             pos1, pos2 = self.get_positions(player.pos, player.rot)
             if player.board.put(player.placingBrick, pos1, pos2):
+                player.board.draw_player_board(surface, player)
                 return True
         # Update and draw player's position on the board
         pos1, pos2 = self.get_positions(player.pos, player.rot)
-        player.board.drawPlayerBoard(surface, player, pos1, pos2)
+        player.board.draw_player_board(surface, player, pos1, pos2)
         return False
 
     
@@ -90,7 +91,7 @@ class Actions:
         ]
 
         if nr_of_players > len(board_positions):
-            raise ValueError(f"Maximum supported players is {len(board_positions)}. You provided {nrOfPlayers}.")
+            raise ValueError(f"Maximum supported players is {len(board_positions)}. You provided {nr_of_players}.")
 
         player_names, colors = player_name_entry(screen)
         if nr_of_players > len(player_names) or nr_of_players > len(colors):
@@ -104,12 +105,12 @@ class Actions:
         
         return players
 
-    def jump_Select(self, selected: int, move_Up: bool, items: list[int]) -> int:
+    def jump_Select(self, selected: int, move_up: bool, items: list[int]) -> int:
         """
         Move selection to the next empty spot (value 0) in the list.
         Parameters:
         selected (int): The current index of the selected item.
-        move_Up (bool): Whether to move up (True) or down (False) in the list.
+        move_up (bool): Whether to move up (True) or down (False) in the list.
         items (list[int]): The list being traversed, where 0 indicates an unoccupied spot.
 
         Returns:
@@ -121,7 +122,7 @@ class Actions:
             return selected
         
         while True:
-            if move_Up:
+            if move_up:
                 selected = selected - 1 if selected > 0 else max_index
             else:
                 selected = selected + 1 if selected < max_index else 0

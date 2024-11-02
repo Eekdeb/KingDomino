@@ -7,6 +7,8 @@ fieldColor = (36, 201, 80)
 desertColor = (144, 150, 123)
 mineColor = (64, 69, 49)
 
+select_color = (255,255,255)
+
 allColors =  [background_colour,startBrickColor,wheatColor,forestColor,waterColor,fieldColor,desertColor,mineColor]
 
 # Initialize constants

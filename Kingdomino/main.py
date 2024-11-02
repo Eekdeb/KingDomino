@@ -27,11 +27,11 @@ pile = BrickStack()
 pile.shuffle()
 
 # Create players
-playerQueue = ac.create_Players(screen, config.BRICK_SIZE, 2)
+playerQueue = ac.create_Players(screen, config.BRICK_SIZE, 1)
 screen.fill(config.background_colour)
 
 for player in playerQueue:
-    player.board.drawPlayerBoard(screen, player)
+    player.board.draw_player_board(screen, player)
     pygame.display.flip()
 
 # Start the game loop
@@ -41,7 +41,7 @@ running = True
 
 while running:
     for i in range(12):
-        pile.drawPlayerBricks(playerQueue, screen, (brickSelectionPosition[0], brickSelectionPosition[1] + 100 + config.BRICK_SIZE * 4), config.BRICK_SIZE)
+        pile.draw_player_bricks(playerQueue, screen, (brickSelectionPosition[0], brickSelectionPosition[1] + 100 + config.BRICK_SIZE * 4), config.BRICK_SIZE)
         if i != 11:
             brick4 = pile.get4()
             pile.take4(brick4, screen, brickSelectionPosition, config.BRICK_SIZE)
@@ -72,5 +72,5 @@ while running:
 
     # Display points at the end of each round
     for p in playerQueue:
-        print(p.name + ": " + str(p.board.getAllPoints()))
+        print(p.name + ": " + str(p.board.get_all_points()))
     running = False
