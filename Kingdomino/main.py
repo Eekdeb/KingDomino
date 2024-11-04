@@ -3,7 +3,6 @@ from Actions import Actions
 from Player import Player
 from BrickStack import BrickStack
 import config
-import graphics
 
 pygame.init()
 
