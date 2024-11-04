@@ -21,7 +21,6 @@ class Board:
         string += "\n"
         return string
     
-    #returns true when succesfully placed
     def put(self,brick,pos1,pos2):
         if self._check_collision(pos1, pos2):
             return False
@@ -46,10 +45,10 @@ class Board:
         joker = 0 if biome == 0 else 1
         board_size = len(self.board)
         directions = [
-            (-1, 0),  # up
-            (1, 0),   # down
-            (0, -1),  # left
-            (0, 1)    # right
+            (-1, 0), 
+            (1, 0), 
+            (0, -1), 
+            (0, 1)    
         ]
 
         for dx, dy in directions:
@@ -75,9 +74,7 @@ class Board:
             for y in range(board_size):
                 pos = [x, y]
                 current_cell = self.board[x][y]
-                # Check if the current cell is empty and has two adjacent empty cells
                 if self.check_neighbors_half_OK(0, pos) and current_cell[0] == 0:
-                    # Check if placing either of the brick's biomes would be valid
                     if (self.check_neighbors_half_OK(brick["bioms"][0], pos) or
                             self.check_neighbors_half_OK(brick["bioms"][1], pos)):
                         return True
@@ -177,14 +174,12 @@ class Board:
                 cell_biome, cell_crowns = self.board[row][column]
                 return config.allColors[cell_biome], (0, 0, 0), cell_crowns
         
-        # Unpack rect values for clarity
         posX, posY, rect_width, rect_height = player.boardpos
         cell_width = rect_width / 5
         cell_height = rect_height / 5
 
         placing_an_extra_brick = (pos1 is not None and pos2 is not None)
         pygame.draw.rect(surface, player.color, (posX - 5, posY - 5, rect_width + 10, rect_height + 10))
-        # Draw each cell in the 5x5 grid
         for row in range(5):
             for column in range(5):
                 border_color = (0,0,0)
@@ -192,7 +187,7 @@ class Board:
                 cellY = posY + row * cell_height
                 cellRect = (cellX, cellY, cell_width, cell_height)
                 cell_color,border_color,cell_crowns = get_cell_properties(row,column)
-                # Draw the cell and its border
+
                 pygame.draw.rect(surface, cell_color, cellRect)
                 pygame.draw.rect(surface, border_color, cellRect, 2)
                 self._draw_crowns(surface,cellRect,cell_crowns)

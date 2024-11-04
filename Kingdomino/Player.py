@@ -18,9 +18,6 @@ class Player:
     def strBrick(self):
         return str(self.placingBrick['bioms'])
     
-    def getName(self):
-        return self.name
-    
     def setBrick(self,brick):
         self.chosenBrick = brick
     

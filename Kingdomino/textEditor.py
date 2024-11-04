@@ -1,10 +1,11 @@
 import pygame_textinput
 import pygame
 
-def getName(screen,pos,playerNr):
-    # No arguments needed to get started
-    textinput = pygame_textinput.TextInputVisualizer()
+'''
+This code is mostly written by AI with some changes to make it compatible to the game and is working
+'''
 
+def getName(screen,pos,playerNr):
     # But more customization possible: Pass your own font object
     font = pygame.font.SysFont("Consolas", 55)
     # Create own manager with custom input validator

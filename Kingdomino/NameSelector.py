@@ -1,5 +1,10 @@
 import pygame
 import sys
+import config
+
+'''
+This code is mostly written by AI with some changes to make it compatible to the game and is working
+'''
 
 pygame.init()
 
@@ -7,7 +12,7 @@ pygame.init()
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
-PLAYER_COLORS = [(106,17,173),(217,33,33),(4,99,7),(255,225,64)]  # Colors for each player
+PLAYER_COLORS = [config.player1,config.player2,config.player3,config.player4]  # Colors for each player
 
 # Fonts
 font = pygame.font.Font(None, 50)  # Smaller font for player names
@@ -90,9 +95,7 @@ def player_name_entry(screen):
     print("Player names are:", player_names)
     return player_names,PLAYER_COLORS
 
-# Example usage in your existing game
 if __name__ == "__main__":
-    # Example of integrating with an existing Pygame game loop
-    screen = pygame.display.set_mode((800, 600))  # Set this to your game's screen size
+    screen = pygame.display.set_mode((800, 600))
     player_names = player_name_entry(screen)
     print(player_names)
