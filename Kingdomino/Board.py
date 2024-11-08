@@ -38,10 +38,10 @@ class Board:
         return False
     
     def _check_neighbors_OK(self,brick,pos1,pos2):
-        return bool(self.check_neighbors_half_OK(brick["bioms"][0],pos1) or 
-                    self.check_neighbors_half_OK(brick["bioms"][1],pos2))
+        return bool(self._check_neighbors_half_OK(brick["bioms"][0],pos1) or 
+                    self._check_neighbors_half_OK(brick["bioms"][1],pos2))
             
-    def check_neighbors_half_OK(self,biome,pos):  
+    def _check_neighbors_half_OK(self,biome,pos):  
         joker = 0 if biome == 0 else 1
         board_size = len(self.board)
         directions = [
@@ -74,14 +74,15 @@ class Board:
             for y in range(board_size):
                 pos = [x, y]
                 current_cell = self.board[x][y]
-                if self.check_neighbors_half_OK(0, pos) and current_cell[0] == 0:
-                    if (self.check_neighbors_half_OK(brick["bioms"][0], pos) or
-                            self.check_neighbors_half_OK(brick["bioms"][1], pos)):
+                if self._check_neighbors_half_OK(0, pos) and current_cell[0] == 0:
+                    if (self._check_neighbors_half_OK(brick["bioms"][0], pos) or
+                            self._check_neighbors_half_OK(brick["bioms"][1], pos)):
                         return True
         return False
     
     def check_placement_roll_OK(self,brick):
-        temp_board = copy.deepcopy(self)
+        temp_board = Board()
+        temp_board.board = self.board
         if temp_board._check_placement_OK(brick):
             return True
         moves = [temp_board.move_up, temp_board.move_down, temp_board.move_right, temp_board.move_left]
@@ -90,7 +91,7 @@ class Board:
                 return True
         return False
     
-    def get_Points(self, pos, sumTiles=0, sumCrowns=0, visited=None):
+    def _get_Points(self, pos, sumTiles=0, sumCrowns=0, visited=None):
         """
         Recursively calculates the total number of connected tiles of the same biome
         and the total crowns within those tiles, starting from a given position.
@@ -120,7 +121,7 @@ class Board:
             if (0 <= new_x < board_size_x and 0 <= new_y < board_size_y):
                 neighbor_pos = (new_x, new_y)
                 if neighbor_pos not in visited and self.board[new_x][new_y][0] == biome:
-                    sumTiles, sumCrowns = self.get_Points([new_x, new_y], sumTiles, sumCrowns, visited)
+                    sumTiles, sumCrowns = self._get_Points([new_x, new_y], sumTiles, sumCrowns, visited)
         return sumTiles, sumCrowns
 
     
@@ -130,7 +131,7 @@ class Board:
         for row in range(len(self.board)):
             for column in range(len(self.board[0])):
                 if (row, column) not in visited and self.board[row][column][0] != 0:
-                    tiles, crowns = self.get_Points([row, column],0,0, visited)
+                    tiles, crowns = self._get_Points([row, column],0,0, visited)
                     total += tiles * crowns
         return total
     

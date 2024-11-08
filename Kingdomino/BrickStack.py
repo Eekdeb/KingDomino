@@ -22,12 +22,12 @@ class BrickStack:
     
     def __str__(self):
         string =  str(self.bricks['bioms'][0]) + " "
-        string += self.crown_to_stars(self.bricks['crowns'][0])
+        string += self._crown_to_stars(self.bricks['crowns'][0])
         string += str(self.bricks['bioms'][1])
-        string += self.crown_to_stars(self.bricks['crowns'][1])
+        string += self._crown_to_stars(self.bricks['crowns'][1])
         return string
     
-    def crown_to_stars(self,crown):
+    def _crown_to_stars(self,crown):
         if(crown == 0):
             return "   "
         if(crown == 1):

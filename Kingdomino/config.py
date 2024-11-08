@@ -1,4 +1,4 @@
-
+import pygame
 number_of_players = 2
 
 #colors
@@ -20,12 +20,12 @@ player3 = (4,99,7)
 player4 = (255,225,64)
 
 #key bindings
-move_up = 'w'
-move_down = 's'
-move_left = 'a'
-move_right = 'd'
-place = 'b'
-rotate = 'q'
+move_up = pygame.K_w
+move_down = pygame.K_s
+move_left = pygame.K_a
+move_right = pygame.K_d
+place = pygame.K_b
+rotate = pygame.K_q
 
 # Initialize constants
 BRICK_SIZE = 60
