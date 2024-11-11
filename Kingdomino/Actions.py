@@ -30,7 +30,7 @@ def _rotate(pos,rot):
         return rot
     return (rot + 1) % 4
     
-def init_and_check_brick_OK(player:Player,screen:pygame.Surface):
+def init_and_check_brick(player:Player,screen:pygame.Surface):
     if not player.board.check_placement_roll_OK(player.placingBrick):
         font = pygame.font.Font(None, 50)
         text = font.render("Can not place brick!", True, player.color)
@@ -50,24 +50,30 @@ def init_and_check_brick_OK(player:Player,screen:pygame.Surface):
     player.rot = 0
     return True
 
-def _choose_brick_position(player: Player, keyPress, surface, rect):
-    pos1, pos2 = _get_positions(player.pos, player.rot)
+def _choose_brick_position(player: Player, key_press, surface):
+    _handle_movement_rotation(player, key_press)
+    return _handle_placement(player, key_press, surface)
+
+
+def _handle_movement_rotation(player, key_press):
     move_actions = {
         "up": lambda: (player.pos[0] > 0 and not (player.rot == 3 and player.pos[0] == 1), -1, 0, player.board.move_down),
         "down": lambda: (player.pos[0] < 4 and not (player.rot == 1 and player.pos[0] == 3), 1, 0, player.board.move_up),
         "right": lambda: (player.pos[1] < 4 and not (player.rot == 0 and player.pos[1] == 3), 0, 1, player.board.move_left),
         "left": lambda: (player.pos[1] > 0 and not (player.rot == 2 and player.pos[1] == 1), 0, -1, player.board.move_right)
     }
-    if keyPress in move_actions:
-        can_move, dx, dy, scroll_action = move_actions[keyPress]()
+    if key_press in move_actions:
+        can_move, dx, dy, scroll_action = move_actions[key_press]()
         if can_move:
             player.pos[0] += dx
             player.pos[1] += dy
         else:
             scroll_action()
-    if keyPress == "rotate":
+    if key_press == "rotate":
         player.rot = _rotate(player.pos, player.rot)
-    if keyPress == "place":
+
+def _handle_placement(player, key_press, surface):
+    if key_press == "place":
         pos1, pos2 = _get_positions(player.pos, player.rot)
         if player.board.put(player.placingBrick, pos1, pos2):
             player.board.draw_player_board(surface, player)
@@ -77,13 +83,13 @@ def _choose_brick_position(player: Player, keyPress, surface, rect):
     return False
 
 
-def place_brick(player:Player,keyPress,surface,rect):
-    placed = _choose_brick_position(player,keyPress,surface,rect)
+def place_brick(player:Player,key_press,surface):
+    placed = _choose_brick_position(player,key_press,surface)
     if placed:
         player.placingBrick = player.chosenBrick
     return placed
 
-def create_Players(screen: pygame.Surface, brick_size: int, nr_of_players: int) -> list[Player]:
+def create_players(screen: pygame.Surface, brick_size: int, nr_of_players: int) -> list[Player]:
     screen_width, screen_height = screen.get_width(), screen.get_height()
     board_positions = [
         (screen_width / 12, screen_height / 12, brick_size * 5, brick_size * 5),
@@ -103,7 +109,7 @@ def create_Players(screen: pygame.Surface, brick_size: int, nr_of_players: int) 
     
     return players
 
-def _jump_Select(selected: int, move_up: bool, items: list[int]) -> int:
+def _jump_select(selected: int, move_up: bool, items: list[int]) -> int:
     """
     Move selection to the next empty spot (value 0) in the list.
     Parameters:
@@ -128,34 +134,40 @@ def _jump_Select(selected: int, move_up: bool, items: list[int]) -> int:
             break
     return selected
 
-def choosingBricks(player_queue, brick4, pos, surface, pile:BrickStack, brick_size):
-    newQueue = [0, 0, 0, 0]
+def choose_bricks(player_queue, brick4, pos, surface, pile: BrickStack, brick_size):
+    new_queue = [0, 0, 0, 0]
     for player in player_queue:
         placed = False
-        selected = len(newQueue) - 1
-        selected = _jump_Select(selected, False, newQueue)
-        pile.draw4_choose(player, newQueue, brick4, selected, surface, pos, brick_size)
+        selected = len(new_queue) - 1
+        selected = _jump_select(selected, False, new_queue)
+        pile.draw4_choose(player, new_queue, brick4, selected, surface, pos, brick_size)
         pygame.display.flip()
         while not placed:
-            if all(newQueue):
-                return newQueue, True
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return player_queue,False
-                if event.type == pygame.KEYDOWN:
-                    if event.key == config.move_up:
-                        selected = _jump_Select(selected, True, newQueue)
-                        pile.draw4_choose(player, newQueue, brick4, selected, surface, pos, brick_size)
-                    elif event.key == config.move_down:
-                        selected = _jump_Select(selected, False, newQueue)
-                        pile.draw4_choose(player, newQueue, brick4, selected, surface, pos, brick_size)
-                    elif event.key == config.place and newQueue[selected] == 0:
-                        newQueue[selected] = player
-                        player.setPlacingBrick(player.chosenBrick)
-                        player.setBrick(brick4[selected])
-                        placed = True
+            if all(new_queue):
+                return new_queue, True
+            placed, selected = _process_events(player, new_queue, brick4, selected, surface, pos, pile, brick_size)
             pygame.display.flip()
-    return [i for i in newQueue if i != 0],True
+    return [i for i in new_queue if i != 0], True
+
+def _process_events(player, new_queue, brick4, selected, surface, pos, pile, brick_size):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == config.move_up:
+                selected = _jump_select(selected, True, new_queue)
+                pile.draw4_choose(player, new_queue, brick4, selected, surface, pos, brick_size)
+            elif event.key == config.move_down:
+                selected = _jump_select(selected, False, new_queue)
+                pile.draw4_choose(player, new_queue, brick4, selected, surface, pos, brick_size)
+            elif event.key == config.place and new_queue[selected] == 0:
+                new_queue[selected] = player
+                player.setPlacingBrick(player.chosenBrick)
+                player.setBrick(brick4[selected])
+                return True, selected
+    return False, selected
+
+
 
 def draw_image(screen:pygame.Surface,rect:pygame.Rect,image_name):
     x_size,y_size,x_position,y_position = rect

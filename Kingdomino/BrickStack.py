@@ -51,48 +51,48 @@ class BrickStack:
         return bricks4
     
     def draw(self, brick, player, surface, rect):
-        posX, posY, width, height = rect
+        pos_x, pos_y, width, height = rect
         color = (0, 0, 0) if player == 0 else player.color
         
-        rect_biome1 = pygame.Rect(posX, posY, width, height)
-        rect_biome2 = pygame.Rect(posX + width, posY, width, height)
+        rect_biome1 = pygame.Rect(pos_x, pos_y, width, height)
+        rect_biome2 = pygame.Rect(pos_x + width, pos_y, width, height)
 
-        rect_crown1 = pygame.Rect(posX+width/10, posY+height/10, width/8, height/8)
-        rect_crown2 = pygame.Rect(posX + width+width/10, posY+height/10, width/8, height/8)
+        rect_crown1 = pygame.Rect(pos_x+width/10, pos_y+height/10, width/8, height/8)
+        rect_crown2 = pygame.Rect(pos_x + width+width/10, pos_y+height/10, width/8, height/8)
         offset = width/7
 
         pygame.draw.rect(surface, config.allColors[brick['bioms'][0]], rect_biome1)
         pygame.draw.rect(surface, color, rect_biome1, 3)
-        for crown in range(brick['crowns'][0]):
+        for _ in range(brick['crowns'][0]):
             pygame.draw.rect(surface, (0,0,0), rect_crown1)
             rect_crown1.left += offset
 
         pygame.draw.rect(surface, config.allColors[brick['bioms'][1]], rect_biome2)
         pygame.draw.rect(surface, color, rect_biome2, 3)       
-        for crown in range(brick['crowns'][1]):
+        for _ in range(brick['crowns'][1]):
             pygame.draw.rect(surface, (0,0,0), rect_crown2)
             rect_crown2.left += offset
 
-    def take4(self,brick4,surface,pos,brickSize):
-        posX,posY = pos
+    def take4(self,brick4,surface,pos,brick_size):
+        pos_x,pos_y = pos
         for brick in brick4:
-            self.draw(brick,0,surface,(posX,posY,brickSize,brickSize))
-            posY = posY + brickSize + brickSize/10    
+            self.draw(brick,0,surface,(pos_x,pos_y,brick_size,brick_size))
+            pos_y = pos_y + brick_size + brick_size/10    
 
     def draw4_choose(self,player,chosen,brick4,selected,surface,pos,brick_size):
         i = 0
-        posX = pos[0]
-        posY = pos[1]
+        pos_x = pos[0]
+        pos_y = pos[1]
         for brick in brick4:
             if(i == selected):
-                self.draw(brick,player,surface,(posX,posY,brick_size,brick_size))
+                self.draw(brick,player,surface,(pos_x,pos_y,brick_size,brick_size))
             else:
-                self.draw(brick,chosen[i],surface,(posX,posY,brick_size,brick_size))
-            posY = posY + brick_size + brick_size/10
+                self.draw(brick,chosen[i],surface,(pos_x,pos_y,brick_size,brick_size))
+            pos_y = pos_y + brick_size + brick_size/10
             i = i+1
     
     def draw_player_bricks(self,player_queue,surface,pos,brick_size):
-        posX,posY = pos
+        pos_x,pos_y = pos
         for player in player_queue:
-            self.draw(player.chosenBrick,player,surface,(posX,posY,brick_size,brick_size))
-            posY = posY + brick_size + brick_size/10
+            self.draw(player.chosenBrick,player,surface,(pos_x,pos_y,brick_size,brick_size))
+            pos_y = pos_y + brick_size + brick_size/10
