@@ -1,10 +1,11 @@
+import sys
 from Player import Player
 from textEditor import getName
 from NameSelector import player_name_entry
 import pygame
 import config
 import BrickStack
-
+from pathlib import Path
 
 def _check_collision_rotation(pos,rot):
     if((rot == 0 and pos[0] == 4)or rot == 2 and pos[0] == 0):
@@ -29,10 +30,22 @@ def _rotate(pos,rot):
         return rot
     return (rot + 1) % 4
     
-def init_and_check_brick_OK(player:Player):
+def init_and_check_brick_OK(player:Player,screen:pygame.Surface):
     if not player.board.check_placement_roll_OK(player.placingBrick):
+        font = pygame.font.Font(None, 50)
+        text = font.render("Can not place brick!", True, player.color)
+        text_rect = text.get_rect(center=(screen.get_width()/2,screen.get_height()/2))
+        screen.blit(text, text_rect)
+        pygame.display.flip()
         print("No placec to put \n", player.placingBrick)
-        return False
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()             
+                if event.type == pygame.KEYDOWN:
+                    pygame.draw.rect(screen,config.background_color,text_rect)
+                    return False
     player.pos = [0,0]
     player.rot = 0
     return True
@@ -143,4 +156,15 @@ def choosingBricks(player_queue, brick4, pos, surface, pile:BrickStack, brick_si
                         placed = True
             pygame.display.flip()
     return [i for i in newQueue if i != 0],True
+
+def draw_image(screen:pygame.Surface,rect:pygame.Rect,image_name):
+    x_size,y_size,x_position,y_position = rect
+    base_path = Path(__file__).parent
+    json_file_path = base_path / (image_name+".png")
+    image = pygame.image.load(json_file_path)
+    resized_image = pygame.transform.scale(image, (x_size,y_size))
+    image_rect = resized_image.get_rect()
+    image_rect.x = x_position
+    image_rect.y = y_position
+    screen.blit(resized_image, image_rect)
             

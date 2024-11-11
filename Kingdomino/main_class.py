@@ -3,6 +3,8 @@ import Actions
 from Player import Player
 from BrickStack import BrickStack
 import config
+import end_screen
+import sys
 
 class game:
     def __init__(self):
@@ -34,7 +36,8 @@ class game:
             self.pick_new_bricks(round,nr_of_rounds)
             if not self.running:
                 break
-            self.placing_bricks()  
+            self.placing_bricks() 
+        end_screen.draw_end_screen(self.screen,self.playerQueue) 
         self.display_points()
 
     def _first_round(self):
@@ -53,7 +56,7 @@ class game:
     
     def placing_bricks(self):
         for player in self.playerQueue:
-            if not Actions.init_and_check_brick_OK(player):
+            if not Actions.init_and_check_brick_OK(player,self.screen):
                 player.nextBrick()
                 continue
             Actions.place_brick(player, "§", self.screen, player.boardpos)
@@ -65,6 +68,7 @@ class game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                    sys.exit()
                     return
                 elif event.type == pygame.KEYDOWN:
                     action_map = {
