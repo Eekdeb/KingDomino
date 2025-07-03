@@ -1,6 +1,7 @@
 [project]
 name = "kingdomino"
 version = "0.1.0"
+packages = ["kingdomino"]
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.9"
